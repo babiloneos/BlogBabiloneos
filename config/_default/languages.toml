@@ -1,0 +1,13 @@
+[en]
+  title = "Babiloneos"
+  languageName = "English"
+  weight = 2
+  languagedir = "ltr"
+  contentdir = "content/en"
+
+[es]
+  title = "Babiloneos"
+  languageName = "Español"
+  weight = 1
+  languagedir = "ltr"
+  contentdir = "content/es"
