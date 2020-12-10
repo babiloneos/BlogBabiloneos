@@ -184,7 +184,7 @@ Input:
 {{< /box >}}
 #### Segundo paso
 Parece que la siguiente palabra tiene valores entre 140 y 170, lo cual me hace pensar que son valores decimales de ASCII, pero al revisar la tabla (que encontrarás en [Lets Warm Up](#lets-warm-up---50-points)), notamos que ASCII solo llega hasta el 127 así que descartamos la idea.
-Podríamos pensar que es otro tipo de codificación para caracteres, pero la verdad es que todas se basan en ASCII por lo que valores más allá de 127 no serán caracteres del alfabeto inglés. Mirando un poco más de cerca los valores a decodificar notamos que no hay ningún 8 o 9, así que se podría tratar de un valor octal, donde el 141 es equivalente a 97 decimal, o _a_ en ASCII. Suena muy bien la idea, así que usaremos [esta página](https://onlineasciitools.com/convert-octal-to-ascii) que convierte de Octal a ASCII.
+Podríamos pensar que es otro tipo de codificación para caracteres, pero la verdad es que todas se basan en ASCII por lo que valores más allá de 127 no serán caracteres del alfabeto inglés. Mirando un poco más de cerca los valores a decodificar notamos que no hay ningún 8 o 9, así que se podría tratar de un valor octal, donde el 141 es equivalente a 97 decimal, o _a_ en ASCII. Suena muy bien la idea, así que usaremos [esta página](https://cryptii.com/pipes/decimal-text) que convierte de Octal a ASCII.
 {{< img src="/images/picoCTF/Based_03.jpg"   position="center" >}}
 Al introducir la palabra obtenida en la terminal obtenemos:
 {{< box >}}
@@ -201,3 +201,97 @@ Usando la misma herramienta que con el paso anterior, pero el valor introducido 
 You've beaten the challenge
 Flag: picoCTF{learning_about_converting_values_00a975ff}
 {{< /box >}}
+## flag_shop - 300 points
+## mus1c - 300 points
+### Descripción
+{{< boxmd >}}I wrote you a _song_. Put it in the picoCTF{} flag format.{{< /boxmd >}}
+#### Pistas
+{{< expand "Pistas" >}}Do you think you can master rockstar?{{< /expand >}}
+### Procedimiento
+La _canción_ que se menciona en la descripción es esta:
+``` lyrics.txt
+Pico's a CTFFFFFFF
+my mind is waitin
+It's waitin
+
+Put my mind of Pico into This
+my flag is not found
+put This into my flag
+put my flag into Pico
+
+
+shout Pico
+shout Pico
+shout Pico
+
+My song's something
+put Pico into This
+
+Knock This down, down, down
+put This into CTF
+
+shout CTF
+my lyric is nothing
+Put This without my song into my lyric
+Knock my lyric down, down, down
+
+shout my lyric
+
+Put my lyric into This
+Put my song with This into my lyric
+Knock my lyric down
+
+shout my lyric
+
+Build my lyric up, up ,up
+
+shout my lyric
+shout Pico
+shout It
+
+Pico CTF is fun
+security is important
+Fun is fun
+Put security with fun into Pico CTF
+Build Fun up
+shout fun times Pico CTF
+put fun times Pico CTF into my song
+
+build it up
+
+shout it
+shout it
+
+build it up, up
+shout it
+shout Pico
+```
+Como podrán observar, es muy confuso lo que se debería hacer y es aquí donde entra uno de los consejos que da [John Hammond](https://www.youtube.com/user/RootOfTheNull), un famoso youtuber que desde hace años resuelve CTFs, sobre usar google como aliado. Si analizamos un poco más cuidadosamente el archivo nos daremos cuenta que tiene una estructura peculiar, obvio simula estrofas, pero también pareciera un código de programación.
+Podríamos guiarnos de ello y buscar en google algún lenguaje que use shout, build, y put, pero en vez de eso podríamos apoyarnos en las Pistas (o hints) que mencionan `master rockstar`. Busquemos eso en google:
+{{< img src="/images/picoCTF/mus1c_01.jpg"   position="center" >}}
+¡Ahí está! Encontramos el repositorio en GitHub de un Lenguaje de Programación llamado [**Rockstar**](https://github.com/RockstarLang/rockstar). No hay muchas pruebas de que se trate de lo que buscamos, pero mirando las especificaciones nos encontramos con ejemplos como:
+``` arrays_Rockstar
+Let my string be "abcdefg"
+Shout my string at 0 (will print "a")
+Shout my string at 1 (will print "b")
+Let the character be my string at 2
+```
+Que nos dicen que en efecto esto es lo que buscamos. Mirando un poco más el repositorio nos encontramos con el compilador [Rocky](https://github.com/gaborsch/rocky) que está basado en Java, así que lo descargamos, compilamos el _.txt_ que tenemos y el resultado es:
+{{< boxmd >}}
+` > ./rocky.jar programs/lyrics.txt `
+114
+114
+114
+111
+99
+107
+110
+114
+110
+48
+49
+49
+51
+114
+{{< /boxmd >}}
+¡Excelente! Si recordamos lo visto en [Based](#based---200-points) y en [Let's Warm Up](#lets-warm-up---50-points) notaremos que estos números son valores de ASCII, por lo que ya sea usando una herramienta online, o de forma manual, llegaremos a el siguiente valor con esos números:
