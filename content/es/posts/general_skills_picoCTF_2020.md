@@ -14,6 +14,12 @@ categories:
 series:
 - picoCTF2020
 ---
+Año tras año se lleva a cabo un CTF organizado por Carnegie Mellon University llamado picoCTF, el cuál alberga retos desde lo más básico hasta avanzados, y al terminar la competición formal se libera la plataforma en Internet para que todos podamos resolver los retos y, aprender o bien reforzar conocimientos. 
+
+Lo interesante de este CTF es la gran cantidad de retos que tiene, y a demás su variedad, pues alberga retos de Explotación Web, Criptografía, Ingeniería Inversa, Forencia, Explotación Binaria y Habilidades Generales. Son, en lo general, todas las categorías que se encuentran en los CTFs.
+
+Este año decidí empezar mi blog resolviendo los retos de picoCTF mientras estudio para retos más grandes, por lo que con este post declaro iniciado mi blog e iniciado mi reto con picoCTF 2020.
+
 ## 2Warm - 50 points
 ### Descripción
 {{< boxmd >}}
@@ -88,7 +94,7 @@ XMdasaWpAXqIHqvFBYTt
 B2WqFg3mFhCfUyvG3sNEs9Ep3FYP2gEkUePqFgUVN30MAZtV
 zc2qhtc8wESHxGya1S9WpEXLgKo4D8ZrKODtQ4
 ```
-Y esto se extiende cientos de lineas, algo común en ejecutables. Pero si te dijas, hay una linea que nos dice que vamos por el camino correcto `Maybe try the 'strings' function? Take a look at the man page`. Pues bien, ya tenemos todos los strings, pero ¿cuál de todas esas cadenas es la Flag?
+Y esto se extiende cientos de lineas, algo común en ejecutables. Pero si te fijas, hay una linea que nos dice que vamos por el camino correcto `Maybe try the 'strings' function? Take a look at the man page`. Pues bien, ya tenemos todos los strings, pero ¿cuál de todas esas cadenas es la Flag?
 
 Como ya mencioné antes, en todo CTF se tiene un formato para la bandera, en este caso `picoCTF{FLAG}`, y en situaciones como estas suelen poner la bandera completa para facilitarnos su ubicación, por lo que nuestro objetivo será ubicar una cadena que empiece con _picoCTF_, algo que podemos hacer con el comando `grep` de la forma siguiente:
 `greo "picoCTF"`
@@ -398,4 +404,161 @@ Que nos dicen que en efecto esto es lo que buscamos. Mirando un poco más el rep
 ### Solución
 {{< box >}}
 picoCTF{rrrocknrn0113r}
+{{< /box >}}
+Lo siguiente fue añadido el 15 de Diciembre del 2020
+## 1_wanna_b3_a_r0ck5tar - 350 points
+### Descripción
+{{< boxmd >}}I wrote you another song. Put the flag in the picoCTF{} flag format{{< /boxmd >}}
+### Procedimiento 01
+De nueva cuenta nos encontramos con un archivo que asemeja a una canción:
+``` lyrics.txt
+Rocknroll is right              
+Silence is wrong                
+A guitar is a six-string        
+Tommy's been down               
+Music is a billboard-burning razzmatazz!
+Listen to the music             
+If the music is a guitar                  
+Say "Keep on rocking!"                
+Listen to the rhythm
+If the rhythm without Music is nothing
+Tommy is rockin guitar
+Shout Tommy!                    
+Music is amazing sensation 
+Jamming is awesome presence
+Scream Music!                   
+Scream Jamming!                 
+Tommy is playing rock           
+Scream Tommy!       
+They are dazzled audiences                  
+Shout it!
+Rock is electric heaven                     
+Scream it!
+Tommy is jukebox god            
+Say it!                                     
+Break it down
+Shout "Bring on the rock!"
+Else Whisper "That ain't it, Chief"                 
+Break it down 
+```
+Análizando más a detalle el texto nos encontramos con estructuras como _if_, también volvemos a ver los _shout_ por lo que sin duda se trata del mismo lenguaje de programación que el anterior reto.
+Por desgracia, al intentar ejecutar el archivo con el compilador anteriormente usado nos encontramos con un error de  código que no nos permite avanzar, este error dice específicamente: `Error: BreakStatement cannot be applied to the block at line 25`. Así que tendrémos que buscar otra forma.
+Releyendo el repositorio en Github de Rockstar nos encontramos con [interpretes de este lenguaje a otros de uso común](https://github.com/RockstarLang/rockstar#implementations), como JavaScript, Java, Pyton, etc. Por lo que probaremos interpretando el texto a código en Python para ánalizar lo que hace el programa y tal vez poder ejecutarlo sin errores.
+El resultado es el siguiente:
+``` output.py
+Rocknroll = True
+Silence = False
+a_guitar = 10
+Tommy = 44
+Music = 170
+the_music = input()
+if the_music == a_guitar:
+    print("Keep on rocking!")
+    the_rhythm = input()
+    if the_rhythm - Music == False:
+        Tommy = 66
+        print(Tommy!)
+        Music = 79
+        Jamming = 78
+        print(Music!)
+        print(Jamming!)
+        Tommy = 74
+        print(Tommy!)
+        They are dazzled audiences
+        print(it!)
+        Rock = 86
+        print(it!)
+        Tommy = 73
+        print(it!)
+        break
+        print("Bring on the rock!")
+        Else print("That ain't it, Chief")
+        break
+```
+Por desgracia esto también tiene errores en código, pero al ser un lenguaje más familiar para nosotros podemos corregirlo hasta que logremos hacerlo:
+``` output_ejecutable.py
+Rocknroll = True
+Silence = False
+a_guitar = 10
+Tommy = 44
+Music = 170
+the_music = int(input('>'))
+if the_music == a_guitar:
+    print("Keep on rocking!")
+    the_rhythm = int(input('>'))
+    if the_rhythm - Music == False:
+        Tommy = 66
+        print(Tommy)
+        Music = 79
+        Jamming = 78
+        print(Music)
+        print(Jamming)
+        Tommy = 74
+        print(Tommy)
+        They = 79       #They are dazzled audiences
+        print(They)     #Decía it, pero se refería a Rock.
+        Rock = 86
+        print(Rock)     #Decía it, pero se refería a Rock.
+        Tommy = 73
+        print(Tommy)    #Decía it pero se refería a Tommy
+        print("Bring on the rock!")
+    else:
+        print("That ain't it, Chief")
+```
+Con un formato mucho más fácil de entender vemos que al ejecutar el código se nos pedira introducir un valor, al poner `10` nos pedirá otro número que debe ser `170` y entonces nos retornará una serie de números.
+{{< boxmd >}}
+cli: > python3 output.py
+>10
+Keep on rocking!
+>170
+66
+79
+78
+74
+79
+86
+73
+Bring on the rock!
+{{< /boxmd >}}
+Si tomamos los valores **NO introducidos por nosotros** y los pasamos a ASCII obtendremos la solución del reto.
+### Procedimiento 02
+Durante el desarrollo de la annterior solución, en el paso de hacer ejecutable el código Python, me encontré con otra solución que nos permite prescindir de Python y el interprete.
+En [esta página](https://codewithrockstar.com/docs) podemos encontrar la documentación de Rockstar en un formato más amigable. Lo que nos interesaría es la sección de **Poetic Number Literals** y **Loops**. Después de darles una lectura rápda podemos comprender la falla al ejecutar el código Rockstar original:
+- `Break it down` no sirve para cerrar bloques if, debe ser un salto de línea en véz de eso.
+- Existen definiciones de números que se reemplazan con texto aleatorio, del cual, para saber su valor, hay que contar las letras del texto de forma que cada palabla es 10 veces mayor a la palabra siguiente. Ej: abrir puerta, donde abrir vale 50 (5 letras) y puerta vale 6 (6 letras y multiplica por 10 a la palabra anterior), resultando en un valor de 56.
+Con esto en cuenta y conocimiento fundamental de programación podemos leer, corregir y útilizar el código en lenguaje Rockstar.
+``` lyrics.txt
+Rocknroll is right              
+Silence is wrong                
+A guitar is a six-string        
+Tommy's been down               
+Music is a billboard-burning razzmatazz!
+Listen to the music             
+If the music is a guitar                  
+Say "Keep on rocking!"                
+Listen to the rhythm
+If the rhythm without Music is nothing
+Tommy is rockin guitar
+Shout Tommy!                    
+Music is amazing sensation 
+Jamming is awesome presence
+Scream Music!                   
+Scream Jamming!                 
+Tommy is playing rock           
+Scream Tommy!       
+They are dazzled audiences                  
+Shout it!
+Rock is electric heaven                     
+Scream it!
+Tommy is jukebox god            
+Say it!                                     
+
+Shout "Bring on the rock!"
+Else Whisper "That ain't it, Chief"                 
+
+```
+Obviamente para entenderlo en su totalidad habrá que leer la documentación anterior, pero no resultará en un problema significativo. A demás, en cualquiera de ambos casos habría que leer la documentación pues el interprete Rockstar a Python falla en una línea: `They are dazzled audiences` y para poder corregirla se necesita comprender el lenguaje Rockstar. Si no se corrige esa línea, obtendríamos una solución incompleta.
+### Solución
+{{< box >}}
+picoCTF{BONJOVI}
 {{< /box >}}
