@@ -27,7 +27,7 @@ Can you convert the number 42 (base 10) to binary (base 2)?
 {{< /boxmd >}}
 ### Procedimiento
 Este reto es el más sencillo, y lo digo sin miedo a equivocarme. Lo único que necesitamos es saber conversión de bases, o más fácil, tener una calculadora.
-Para facilitar el trabajo usaré una calculadora en modo programador. Simplemente inntroducimos el valor decimal y nos retorna el mismo valor en binario.
+Para facilitar el trabajo usaré una calculadora en modo programador. Simplemente introducimos el valor decimal y nos retorna el mismo valor en binario.
 {{< img src="/images/picoCTF/2Warm_01.jpg" title="Calculadora"  position="center" >}}
 Como observamos el resultado es 101010 pero al tratarse de un CTF hay que poner la respuesta en el formato del mismo, que viene a ser "picoCTF{FLAG}"
 ### Solución
@@ -129,10 +129,10 @@ Can you find the flag in _file_? This would be really tedious to look through ma
 {{< /boxmd >}}
 ### Procedimiento
 Este reto es extremadamente similar a strings, pues el nombre ya nos dice que hacer y de nueva forma, se basa en usar _grep_. Sin embargo, esta vez no tenemos un archivo ejecutable, sino un archivo de texto por lo que, pese a ser útil el comando _strings_, lo ideal sería usar el comando `cat`.
-El comando `cat` realmente funciona para concatenar el contenido de dos archivos y lo mostrará como output, sin embargo, si solo se le pasa como argumento un archivo, mostrará el contenido de ese archivo como output. Usando este output en grep nos terminaría dando el mismo resultado que se obtuvo en el reto antes mencionado.
+El comando `cat` realmente funciona para concatenar el contenido de dos archivos y lo mostrará como output, sin embargo, si solo se le pasa como argumento un archivo, mostrará el contenido de ese archivo como output. Usando este output en grep nos terminaría dando el mismo resultado que se obtuvo en el reto anterior.
 El comando final debería quedar algo así:
 ``` 
-strings file | grep "picoCTF"
+cat file | grep "picoCTF"
 ```
 {{< img src="/images/picoCTF/FirstGrep_01.jpg"   position="center" >}}
 ### Solución
@@ -146,7 +146,7 @@ Using netcat (nc) is going to be pretty important. Can you connect to _jupiter.c
 {{< /boxmd >}}
 ### Procedimiento
 Esta vez todo está claro desde el nombre y la descripción: debemos usar netcat en la url y puerto indicados. 
-Netcat es una herramienta que permite asociar un script a un puerto específico de la IP publica propia. La forma de usarlo sería:
+Netcat es una herramienta que permite asociar un script, colocado en el puerto de una computadora remota, a nuestra computadora. La forma de usarlo sería:
 ```
 nc jupiter.challenges.picoctf.org 64287
 ```
@@ -159,7 +159,7 @@ picoCTF{nEtCat_Mast3ry_284be8f7}
 ### Descripción
 Sometimes you need to handle process data outside of a file. Can you find a way to keep the output from this program and search for the flag? Connect to _jupiter.challenges.picoctf.org 7480_.
 ### Procedimiento
-Por primera vez las cosas no parecen del todo claras, sin embargo recordando cómo usamos `grep` y `nc` podríamos guiarnos. La primer idea que se me viene a la mente es revisar la salida del netcar especificada:
+Por primera vez las cosas no parecen del todo claras, sin embargo recordando cómo usamos `grep` y `nc` podríamos guiarnos. La primer idea que se me viene a la mente es revisar la salida del netcat especificada:
 {{< img src="/images/picoCTF/plumbing_01.jpg"   position="center" >}}
 La salida es larga y repetitiva. Siguiendo con mi idea, habría que mandar esta salida al `grep` para que nos muestre directamente la linea que tenga _picoCTF_ en ella:
 ```
@@ -475,7 +475,7 @@ if the_music == a_guitar:
         Else print("That ain't it, Chief")
         break
 ```
-Por desgracia esto también tiene errores en código, pero al ser un lenguaje más familiar para nosotros podemos corregirlo hasta que logremos hacerlo:
+Por desgracia esto también tiene errores en código, pero al ser un lenguaje más familiar para nosotros podemos corregirlo hasta que logremos ejecutarlo:
 ``` output_ejecutable.py
 Rocknroll = True
 Silence = False
@@ -507,10 +507,10 @@ if the_music == a_guitar:
 ```
 Con un formato mucho más fácil de entender vemos que al ejecutar el código se nos pedira introducir un valor, al poner `10` nos pedirá otro número que debe ser `170` y entonces nos retornará una serie de números.
 {{< boxmd >}}
-cli: > python3 output.py
->10
+cli: $ python3 output.py
+$ 10
 Keep on rocking!
->170
+$ 170
 66
 79
 78
